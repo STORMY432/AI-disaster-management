@@ -190,22 +190,28 @@ http://localhost:5173
 
 # 📸 Screenshots
 
-Add screenshots of:
+## 🏠 Home Screen
 
-- 🖥️ Chat Interface
-- 🌦️ Weather Card
-- 🗺️ Interactive Map
-- 📰 Disaster News Section
+![Home Screen](./screenshots/homepage.png)
 
-Example:
+---
 
-```
-screenshots/
-    home.png
-    weather.png
-    news.png
-    map.png
-```
+## 💬 AI Chat Response
+
+![AI Chat](./screenshots/chat1.png)
+  ![AI Chat](./screenshots/chat2.png)      
+
+---
+
+## 🗺️ Interactive Map
+
+![Map View](./screenshots/map.png)
+
+---
+
+## 📰 Latest Disaster News
+
+![Disaster News](./screenshots/news.png)
 
 ---
 
