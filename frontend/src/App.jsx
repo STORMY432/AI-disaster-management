@@ -1,603 +1,226 @@
 import { useState } from "react";
 import axios from "axios";
 import "./App.css";
-
+import MapView from "./MapView";
 
 function App() {
-
-
   const [prompt, setPrompt] = useState("");
-
   const [messages, setMessages] = useState([]);
-
   const [loading, setLoading] = useState(false);
 
-
-
-  // -----------------------------
-  // Ask AI Function
-  // -----------------------------
+  // ==========================
+  // ASK AI
+  // ==========================
 
   const askAI = async () => {
-
-
-    if (!prompt.trim()) {
-
-      alert("Please enter a disaster-related question");
-
-      return;
-
-    }
-
-
-
     const userMessage = prompt;
 
-
+    if (!userMessage.trim()) {
+      alert("Please enter a disaster-related question");
+      return;
+    }
 
     setMessages((prev) => [
-
       ...prev,
-
       {
-
         role: "user",
-
-        text: userMessage
-
-      }
-
+        text: userMessage,
+      },
     ]);
 
-
-
     setPrompt("");
-
     setLoading(true);
 
-
-
     try {
-
-
-
       const response = await axios.post(
-
         "http://127.0.0.1:8000/chat",
-
         {
-
-          prompt: userMessage
-
+          prompt: userMessage,
         }
-
       );
 
-
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "ai",
+          text: response.data.answer,
+          disaster: response.data.disaster,
+          severity: response.data.severity,
+          weather: response.data.weather,
+          news: response.data.news,
+          sources: response.data.sources,
+        },
+      ]);
+    } catch (error) {
+      console.log(error);
 
       setMessages((prev) => [
-
         ...prev,
-
         {
-
           role: "ai",
-
-          text: response.data.answer,
-
-          disaster: response.data.disaster,
-
-          severity: response.data.severity,
-
-          sources: response.data.sources
-
-        }
-
+          text: "❌ Unable to connect with AI server.",
+        },
       ]);
-
-
-
-
-    } catch(error) {
-
-
-
-      console.error(error);
-
-
-
-      setMessages((prev)=>[
-
-        ...prev,
-
-        {
-
-          role:"ai",
-
-          text:
-          "❌ Unable to connect with AI server. Please make sure backend is running."
-
-        }
-
-      ]);
-
-
-
-    }
-
-
-
-    finally {
-
-
+    } finally {
       setLoading(false);
-
-
     }
-
-
   };
 
-
-
-
-
-
-  // -----------------------------
   // Clear Chat
-  // -----------------------------
-
-  const clearChat = ()=>{
-
-
+  const clearChat = () => {
     setMessages([]);
-
-
   };
 
-
-
-
-
-  // -----------------------------
-  // Copy Response
-  // -----------------------------
-
-  const copyText = (text)=>{
-
-
+  // Copy
+  const copyText = (text) => {
     navigator.clipboard.writeText(text);
-
-
     alert("Response copied!");
-
   };
 
+  // Disaster Icon
+  const getDisasterIcon = (disaster) => {
+    const type = disaster?.toLowerCase();
 
-
-
+    if (type === "flood") return "🌊";
+    if (type === "earthquake") return "🌎";
+    if (type === "wildfire") return "🔥";
+    if (type === "cyclone") return "🌪️";
+    if (type === "tsunami") return "🌊";
+    if (type === "landslide") return "⛰️";
+    return "⚠️";
+  };
 
   return (
-
-
-
     <div className="app">
-
-
-
       <header>
+        <h1>🌍 AI Disaster Management System</h1>
+        <p>AI-powered emergency analysis and disaster assistance</p>
 
-
-        <h1>
-          🌍 AI Disaster Management System
-        </h1>
-
-
-
-        <p>
-          AI-powered emergency analysis and disaster assistance
-        </p>
-
-
-
-        <button
-          className="clear-btn"
-          onClick={clearChat}
-        >
-
+        <button className="clear-btn" onClick={clearChat}>
           🧹 Clear Chat
-
         </button>
-
-
-
       </header>
 
-
-
-
-
       <div className="chat-container">
-
-
-
         <div className="chat-box">
-
-
-
-          {
-
-          messages.length === 0 ?
-
-
-
-          (
-
+          {messages.length === 0 ? (
             <p className="welcome">
-
-              Ask me anything about earthquakes,
-              floods, cyclones, wildfire, tsunami,
-              landslides or disaster safety.
-
+              Ask me anything about earthquakes, floods, cyclones, wildfire,
+              tsunami, landslides or disaster safety.
             </p>
-
-
-          )
-
-          :
-
-
-          (
-
-
-            messages.map((msg,index)=>(
-
-
-
+          ) : (
+            messages.map((msg, index) => (
               <div
-
                 key={index}
-
-                className={
-
-                  msg.role==="user"
-
-                  ?
-
-                  "user-message"
-
-                  :
-
-                  "ai-message"
-
-                }
-
-
+                className={msg.role === "user" ? "user-message" : "ai-message"}
               >
+                <strong>{msg.role === "user" ? "👤 You" : "🤖 DisasterAI"}</strong>
 
-
-
-                <strong>
-
-
-                  {msg.role==="user"
-
-                  ?
-
-                  "👤 You"
-
-                  :
-
-                  "🤖 DisasterAI"
-
-                  }
-
-
-                </strong>
-
-
-
-
-
-                {
-
-
-                msg.role==="ai" &&
-
-                (
-
+                {msg.role === "ai" && (
                   <div className="metadata">
-
-
-
-                    <p>
-
-                      🌎 Disaster:
-
-                      {" "}
-
-                      {msg.disaster}
-
+                    <p className="disaster-type">
+                      {getDisasterIcon(msg.disaster)} Disaster: {msg.disaster}
                     </p>
 
-
-
-
                     <p>
-
-                      🚨 Severity:
-
-                      {" "}
-
-                      {msg.severity}
-
+                      🚨 Severity:{" "}
+                      <span className={`severity ${msg.severity?.toLowerCase()}`}>
+                        {msg.severity}
+                      </span>
                     </p>
 
+                    {msg.weather && (
+                      <>
+                        <div className="weather-card">
+                          <h4>🌦 Weather Information</h4>
+                          <p>📍 City: {msg.weather.city}</p>
+                          <p>🌡 Temperature: {msg.weather.temperature}°C</p>
+                          <p>☁ Condition: {msg.weather.weather}</p>
+                          <p>💧 Humidity: {msg.weather.humidity}%</p>
+                          <p>💨 Wind Speed: {msg.weather.wind_speed} m/s</p>
+                        </div>
 
-
+                        <MapView
+                          city={msg.weather.city}
+                          lat={msg.weather.lat}
+                          lon={msg.weather.lon}
+                        />
+                      </>
+                    )}
                   </div>
+                )}
 
-                )
+                <p>{msg.text}</p>
 
+                <button
+                  className="copy-btn"
+                  onClick={() => copyText(msg.text)}
+                >
+                  📋 Copy
+                </button>
 
-                }
+                <div className="emergency-card">
+                  <h4>🚨 Emergency Contacts</h4>
+                  <p>📞 Disaster Management: 1078</p>
+                  <p>🚑 Ambulance: 108</p>
+                  <p>🚓 Police: 100</p>
+                  <p>🔥 Fire: 101</p>
+                </div>
 
+                {msg.news && msg.news.length > 0 && (
+                  <div className="news-card">
+                    <h4>📰 Latest Disaster News</h4>
+                    {msg.news.map((article, i) => (
+                      <div className="news-item" key={i}>
+                        <p>📰 {article.title}</p>
+                        <small>Source: {article.source}</small>
+                        <br />
+                        <a
+                          href={article.url}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          Read Full Article →
+                        </a>
+                      </div>
+                    ))}
+                  </div>
+                )}
 
-
-
-
-
-
-                <p>
-
-                  {msg.text}
-
-                </p>
-
-
-
-
-
-                {
-
-
-                msg.role==="ai"
-
-                &&
-
-                (
-
-                  <button
-
-                    className="copy-btn"
-
-                    onClick={()=>
-
-                      copyText(msg.text)
-
-                    }
-
-                  >
-
-                    📋 Copy
-
-                  </button>
-
-                )
-
-
-                }
-
-
-
-
-
-
-
-                {
-
-
-                msg.role==="ai"
-
-                &&
-
-                msg.sources
-
-                &&
-
-                msg.sources.length>0
-
-                &&
-
-                (
-
+                {msg.sources && msg.sources.length > 0 && (
                   <div className="sources">
-
-
-
-                    <h4>
-
-                      📚 Sources Used
-
-                    </h4>
-
-
-
-
-                    {
-
-
-                    msg.sources.map(
-
-                      (source,i)=>(
-
-
-                        <p key={i}>
-
-                          📄 {source}
-
-                        </p>
-
-
-                      )
-
-                    )
-
-
-                    }
-
-
-
-
+                    <h4>📚 Sources Used</h4>
+                    {msg.sources.map((source, i) => (
+                      <p key={i}>📄 {source}</p>
+                    ))}
                   </div>
-
-                )
-
-
-                }
-
-
-
-
+                )}
               </div>
-
-
-
             ))
+          )}
 
-
-          )
-
-          }
-
-
-
-
-
-
-
-          {
-
-
-          loading &&
-
-          (
-
+          {loading && (
             <div className="ai-message">
-
-
-              <strong>
-
-                🤖 DisasterAI
-
-              </strong>
-
-
-              <p>
-
-                Analyzing disaster information...
-
-              </p>
-
-
+              <strong>🤖 DisasterAI</strong>
+              <p>Analyzing disaster information...</p>
             </div>
-
-
-          )
-
-
-          }
-
-
-
+          )}
         </div>
-
-
-
-
-
-
 
         <div className="input-area">
-
-
-
           <textarea
-
-
             value={prompt}
-
-
-            onChange={(e)=>
-
-              setPrompt(e.target.value)
-
-            }
-
-
-            placeholder=
-            "Ask your disaster-related question..."
-
-
+            onChange={(e) => setPrompt(e.target.value)}
+            placeholder="Ask your disaster-related question..."
           />
 
-
-
-
-
-          <button
-
-            onClick={askAI}
-
-            disabled={loading}
-
-
-          >
-
-
-            {
-
-            loading
-
-            ?
-
-            "Processing..."
-
-            :
-
-            "Ask AI"
-
-            }
-
-
-
+          <button onClick={askAI} disabled={loading}>
+            {loading ? "Processing..." : "Ask AI"}
           </button>
-
-
-
-
-
         </div>
-
-
-
-
-
       </div>
-
-
-
-
-
     </div>
-
-
-
   );
-
-
 }
-
-
 
 export default App;
