@@ -40,6 +40,11 @@ function App() {
         `${backendUrl}/chat`,
         {
           prompt: userMessage,
+        },
+        {
+          headers:{
+            "ngrok-skip-browser-warning": "true"
+          }
         }
       );
 
