@@ -218,6 +218,7 @@ http://localhost:5173
 ## DisasterAnalytics Dashboard
 ![DisasterAnalytics Dashboard](./screenshots/DisasterAnalytics.png)
 
+---
 
 # 🔮 Future Improvements
 
