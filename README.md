@@ -227,7 +227,6 @@ http://localhost:5173
 - 📄 PDF Report Generation
 - 📍 Live GPS Location Detection
 - ☁️ Cloud Deployment
-- 📊 Disaster Analytics Dashboard
 - 📱 Mobile Responsive Improvements
 
 ---
