@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import "./App.css";
 import MapView from "./MapView";
+import AnalyticsDashboard from "./AnalyticsDashboard";
 
 function App() {
   const [prompt, setPrompt] = useState("");
@@ -102,6 +103,10 @@ function App() {
       </header>
 
       <div className="chat-container">
+        
+        {/* Disaster Analytics Dashboard */}
+        <AnalyticsDashboard messages={messages} />
+
         <div className="chat-box">
           {messages.length === 0 ? (
             <p className="welcome">
