@@ -33,8 +33,11 @@ function App() {
     setLoading(true);
 
     try {
+      // Dynamically use environment variable for production (Netlify) or fallback to local
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://127.0.0.1:8000";
+
       const response = await axios.post(
-        "http://127.0.0.1:8000/chat",
+        `${backendUrl}/chat`,
         {
           prompt: userMessage,
         }
