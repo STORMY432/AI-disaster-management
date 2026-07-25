@@ -248,6 +248,10 @@ This project demonstrates practical knowledge of:
 
 ---
 
+# AI Disaster Management System
+
+🚀 **Live Demo:** [https://kaleidoscopic-parfait-7864fe.netlify.app](https://kaleidoscopic-parfait-7864fe.netlify.app)
+
 # 👨‍💻 Author
 
 **Sowroneel Bal**
@@ -260,3 +264,4 @@ https://github.com/STORMY432
 # ⭐ Support
 
 If you found this project useful, consider giving it a ⭐ on GitHub.
+
