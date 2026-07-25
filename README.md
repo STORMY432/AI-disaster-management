@@ -215,6 +215,9 @@ http://localhost:5173
 
 ---
 
+![DisasterAnalytics Dashboard](./screenshots/DisasterAnalytics.png)
+
+
 # 🔮 Future Improvements
 
 - 🌐 Multi-language Support
